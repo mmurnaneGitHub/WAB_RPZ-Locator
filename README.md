@@ -12,3 +12,5 @@ INSTRUCTIONS:
 3. Copy Search_Widget.js to \widgets\Search\Widget.js
 
 4. The rest of the work is done \libs\mjm_ClickReport.js which is unique for each application.
+
+5. Update files from repository https://github.com/mmurnaneGitHub/WAB_Override-Default-Map-Click
