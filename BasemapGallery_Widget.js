@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 - 2018 Esri. All Rights Reserved.
+// Copyright © Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ define([
     "esri/dijit/Basemap",
     "esri/dijit/BasemapLayer",
     'esri/dijit/BasemapGallery',
+    "./a11y/Widget",
     'dojo/_base/lang',
     'dojo/_base/array',
     "dojo/_base/html",
@@ -47,6 +48,7 @@ define([
     Basemap,
     BasemapLayer,
     BasemapGallery,
+    a11y,
     lang,
     array,
     html,
@@ -182,13 +184,14 @@ define([
           config.bingMapsKey = result.portalSelf.bingKey;
           this.basemapGallery = new BasemapGallery(config, this.basemapGalleryDiv);
           this.basemapGallery.startup();
+          this.a11y_initGalleryNodesAttrs();
 
-          //MJM
-          this.basemapGallery.select('basemap_0');  //Start with open Basemap Gallery panel to make this happen, Change basemap to aerial (basemap_0)
-          var pm = PanelManager.getInstance();  
-          pm.showPanel(this.appConfig.widgetPool.widgets[3]);  //Open About panel
-          //end MJM
-
+          //MJM ----------------------------	
+          this.basemapGallery.select('basemap_0');  //Start with open Basemap Gallery panel to make this happen, Change basemap to aerial (basemap_0)	
+          var pm = PanelManager.getInstance();  	
+          pm.showPanel(this.appConfig.widgetPool.widgets[3]);  //Open About panel	
+          //end MJM ------------------------
+            
           this.own(on(this.basemapGallery,
                       "selection-change",
                       lang.hitch(this, this.selectionChange)));
@@ -255,5 +258,6 @@ define([
       }
     });
 
+    clazz.extend(a11y);//for a11y
     return clazz;
   });
