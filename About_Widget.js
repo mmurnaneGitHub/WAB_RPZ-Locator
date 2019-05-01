@@ -86,14 +86,15 @@ define(['dojo/_base/declare',
 
         //Focus customContentNode
         //use firstTabNode for passing focus state to customContentNode (FF)
-        this.own(on(this.splashContainerNode, 'focus', lang.hitch(this, function() {
+        this.own(on(this.splashContainerNode, 'focus', lang.hitch(this, function(){
           this.firstTabNode.focus();
         })));
-        this.own(on(this.firstTabNode, 'focus', lang.hitch(this, function() {
+        this.own(on(this.firstTabNode, 'focus', lang.hitch(this, function(){
           this.customContentNode.focus();
         })));
 
         jimuUtils.setWABLogoDefaultAlt(this.customContentNode);
+
         //MJM - Started with open Basemap Gallery panel to create combo map (streets & aerial), then opened this widget, so now close the initial widget...	        //Focus customContentNode
         PanelManager.getInstance().closePanel(this.appConfig.widgetPool.widgets[2].id + '_panel'); //close Basemap Gallery Widget
         //-------------------------------------------------------------------------------------------------------------------------------------------------
