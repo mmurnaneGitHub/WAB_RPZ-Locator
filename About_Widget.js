@@ -83,7 +83,7 @@ define(['dojo/_base/declare',
 
         jimuUtils.setWABLogoDefaultAlt(this.customContentNode);
         //MJM - Started with open Basemap Gallery panel to create combo map (streets & aerial), then opened this widget, so now close the initial widget...	        //Focus customContentNode
-          PanelManager.getInstance().closePanel(this.appConfig.widgetPool.widgets[2].id + '_panel');  //close Basemap Gallery Widget	        //use firstTabNode for passing focus state to customContentNode (FF)
+          PanelManager.getInstance().closePanel(this.appConfig.widgetPool.widgets[2].id + '_panel');  //close Basemap Gallery Widget
         //-------------------------------------------------------------------------------------------------------------------------------------------------
       },
 
