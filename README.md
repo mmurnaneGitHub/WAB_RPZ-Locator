@@ -1,4 +1,4 @@
-# WAB_RPZ-Locater
+# WAB_RPZ-Locator
 Custom files for RPZ Locater application at https://wspdsmap.cityoftacoma.org/website/PW/RPP/ 
 
 Version 2.12
