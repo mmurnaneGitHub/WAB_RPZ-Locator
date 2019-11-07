@@ -26,7 +26,7 @@ define([
   'dojo/dom-style',
   'dojo/dom-class'
 
-], function(
+], function (
   SimpleLineSymbol,
   SimpleFillSymbol,
   BufferParameters,
@@ -58,8 +58,6 @@ define([
   //------------------------------------------------------------------------
 
   //Geometry Service - used to perform the buffer
-  //gsvc = new esri.tasks.GeometryService("https://wspdsmap.cityoftacoma.org/arcgis/rest/services/Utilities/Geometry/GeometryServer");
-  //gsvc = new esri.tasks.GeometryService("http://geobase-dbnewer/arcgis/rest/services/Utilities/Geometry/GeometryServer");
   gsvc = new esri.tasks.GeometryService("https://gis.cityoftacoma.org/arcgis/rest/services/Utilities/Geometry/GeometryServer");
 
   //Current Parcel
@@ -83,21 +81,16 @@ define([
 
   //Query layer - parcel (base)
   var qtparcel = new QueryTask("https://gis.cityoftacoma.org/arcgis/rest/services/PDS/DARTparcels_PUBLIC/MapServer/3");
-  //var qtparcel = new QueryTask("https://wspdsmap.cityoftacoma.org/arcgis/rest/services/TP_Public/DARTparcels/MapServer/3");
-  var qparcel = new Query();
+ var qparcel = new Query();
 
   //Query layer - RPP  
   var qtRPP = new QueryTask("https://gis.cityoftacoma.org/arcgis/rest/services/PW/RPP/MapServer/1");
-  //var qtRPP = new QueryTask("https://wspdsmap.cityoftacoma.org/arcgis/rest/services/PW/RPP/MapServer/1");
-  //var qtRPP = new QueryTask("http://geobase-dbnewer/arcgis/rest/services/PW/RPP/MapServer/1");
   var qRPP = new Query();
   qparcel.returnGeometry = qRPP.returnGeometry = true;
   qparcel.outFields = qRPP.outFields = ["*"]; //return all fields
 
   //Query layer - RPZ  
   var qtRPZ = new QueryTask("https://gis.cityoftacoma.org/arcgis/rest/services/PW/RPP/MapServer/0");
-  //var qtRPZ = new QueryTask("https://wspdsmap.cityoftacoma.org/arcgis/rest/services/PW/RPP/MapServer/0");
-  //var qtRPZ = new QueryTask("http://geobase-dbnewer/arcgis/rest/services/PW/RPP/MapServer/0");
   var qRPZ = new Query();
   qRPZ.returnGeometry = true;
 
@@ -120,7 +113,7 @@ define([
 
   var mjm_ClickReportFunctions = {
 
-    newReport: function(currentMap, mapClick, SR) {
+    newReport: function (currentMap, mapClick, SR) {
       map = currentMap; //update map & close button
       candidate_location = mapClick; //reset for popup window 
       paramsBuffer.outSpatialReference = SR; //Update SR 
@@ -138,16 +131,15 @@ define([
         });
 
         //When infoWindow moved, hide pointer arrow:
-        on(dnd, 'FirstMove', function() {
-          // hide pointer and outerpointer (used depending on where the pointer is shown)
+        on(dnd, 'FirstMove', function () {  // hide pointer and outerpointer (used depending on where the pointer is shown)
           theNodes = [".outerPointer", ".pointer"];
-          arrayUtils.forEach(theNodes, function(theNode) {
+          arrayUtils.forEach(theNodes, function (theNode) {
             var arrowNode = dQuery(theNode, map.infoWindow.domNode)[0];
             if (domStyle.get(arrowNode, "display") === "block") {
               domStyle.set(arrowNode, "display", "none");
               //Reset infoWindow (put back pointer) when closed
               var closeReset = dQuery(".titleButton.close", map.infoWindow.domNode)[0];
-              on(closeReset, 'click', function() {
+              on(closeReset, 'click', function () {
                 domStyle.set(arrowNode, "display", ""); //reset - blank will let it rebuild correctly on next open
               }.bind(this));
             };
@@ -170,20 +162,20 @@ define([
       }
     },
 
-    executeQueries: function(e) {
+    executeQueries: function (e) {
       this.cleanUp();
       qparcel.geometry = e; // use the map click, geocode, or device location for the query geometry
       qtparcel.execute(qparcel, this.handleQueryParcel); //query for a parcel at location
     },
 
-    cleanUp: function() {
+    cleanUp: function () {
       map.graphics.clear(); //remove all graphics - buffer and points
       if (map.infoWindow.isShowing) {
         map.infoWindow.hide(); //Close existing popups
       }
     },
 
-    handleQueryParcel: function(results) {
+    handleQueryParcel: function (results) {
       currentParcel = ""; //clear out previous results
       parcel = results.features;
       //Parcel info 
@@ -199,10 +191,10 @@ define([
         paramsBuffer.geometries = [parcel[0].geometry];
         var bufferedGeometries = gsvc.buffer(paramsBuffer); //BUFFER the parcel
         //Using dojo deferred 'then' function to set callback and errback functions
-        bufferedGeometries.then(function(bufferedGeometries) {
+        bufferedGeometries.then(function (bufferedGeometries) {
           //First Deferred - Parcel buffer results
           qRPP.geometry = bufferedGeometries[0]; //Query with buffer polygon - use parcel inside buffer, not map click point
-          qtRPP.execute(qRPP, function(results) {
+          qtRPP.execute(qRPP, function (results) {
             //Second Deferred (execute) - Query with buffer polygon results
             var r = "";
             var allowedUses = "";
@@ -220,7 +212,7 @@ define([
                 allowedUses += "<br>" + theMessage + " Please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map - Parcel " + currentParcel + "&body=SITE INFORMATION FOR PARKING SERVICES STAFF: %0D%0AParcel " + currentParcel + "%0D%0A" + theMessage + "%0D%0A %0D%0A Please add your comments and contact information here -->' onfocus='this.blur();'>rpp@cityoftacoma.org</a> for determination. <br>&nbsp;</div>";
 
               } else {
-                arrayUtils.forEach(RPPResults, function(RPPResultsRec) { //loop through multiple records (just 1 now)
+                arrayUtils.forEach(RPPResults, function (RPPResultsRec) { //loop through multiple records (just 1 now)
                   allowedUses += "<div style='clear:both;'><hr color='#ACB1DB'></div>";
                   allowedUses += "<div style='float:left;'><b>Qualify?</b>";
 
@@ -230,11 +222,11 @@ define([
                     //Update the span RPZ_Info with any RPZ info in the area (3 outcomes)
                     paramsBuffer_RPZ.geometries = paramsBuffer.geometries; //use existing select parcel boundary for geometry
                     var bufferedOutsideGeometries = gsvc.buffer(paramsBuffer_RPZ); //buffer outside parcel
-                    bufferedOutsideGeometries.then(function(bufferedGeometries) {
+                    bufferedOutsideGeometries.then(function (bufferedGeometries) {
                       //Third Deferred (execute) - buffer outside parcel buffer
                       //Query RPZ with buffered parcel polygon
                       qRPZ.geometry = bufferedGeometries[0]; //use parcel outside buffer, not map click point
-                      qtRPZ.execute(qRPZ, function(results) {
+                      qtRPZ.execute(qRPZ, function (results) {
                         //Fourth Deferred - run query with resulting parcel buffer
                         //Update the span with any RPZ info in the area (3 outcomes)
                         if (results.features.length > 0) {
@@ -256,7 +248,7 @@ define([
                             3
                           );
                           resultGraphic = results.features;
-                          arrayUtils.forEach(resultGraphic, function(feat) {
+                          arrayUtils.forEach(resultGraphic, function (feat) {
                             feat.setSymbol(sls);
                             map.graphics.add(feat); // Add the resultGraphic boundary to the map
                           });
@@ -266,13 +258,13 @@ define([
                           dom.byId("RPZ_Info").innerHTML = "Congratulations! According to our records, your residence is eligible for the creation of a Residential Parking Zone. If interested on how to begin this process please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map - Creation of a Residential Parking Zone - Parcel " + currentParcel + "' onfocus='this.blur();'>rpp@cityoftacoma.org</a>.";
                         }
 
-                      }, function(err) {
+                      }, function (err) {
                         //Fourth Deferred Error
                         alert("Error in identify: " + err.message);
                         console.error("Identify Error: " + err.message);
                       });
 
-                    }, function(err) {
+                    }, function (err) {
                       //Third Deferred Error
                       alert("Error in buffer: " + err.message);
                       console.error("Buffer Error: " + err.message);
@@ -280,8 +272,7 @@ define([
 
                   } else if (RPPResultsRec.attributes.E_Status == 2) {
                     //PTAG Regulated (Gray) - 7735000040
-                    //allowedUses += "<br>The location entered does not qualify for the Residential Parking Program. The location falls under a zoning classification that is currently being reviewed by the Parking Technical Advisory Group. Existing Residential Parking Zones in this area will dissolve two years after the adoption of the new program. To learn more about PTAG and the process for establishing parking control strategies for this mixed use area please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map - PTAG - Parcel " + currentParcel + "' onfocus='this.blur();'>rpp@cityoftacoma.org</a>. <br>&nbsp;</div>";
-                    allowedUses += "<br>The location entered falls under a mixed use zoning classification. These areas have different specifications for size and layout. The Residential Parking Program does allow Residential Parking Zones in areas of mixed use but must be verified first for eligibility by City of Staff. Please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map - PTAG - Parcel " + currentParcel + "' onfocus='this.blur();'>rpp@cityoftacoma.org</a> to inquire about eligibility. <br>&nbsp;</div>";
+                     allowedUses += "<br>The location entered falls under a mixed use zoning classification. These areas have different specifications for size and layout. The Residential Parking Program does allow Residential Parking Zones in areas of mixed use but must be verified first for eligibility by City of Staff. Please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map - PTAG - Parcel " + currentParcel + "' onfocus='this.blur();'>rpp@cityoftacoma.org</a> to inquire about eligibility. <br>&nbsp;</div>";
                   } else if (RPPResultsRec.attributes.E_Status == 3) {
                     //Not Eligible (Red-brown) - 2009090013
                     allowedUses += "<br>The location entered does not qualify for the Residential Parking Program. Existing Residential Parking Zones will dissolve two years after the adoption of the new program. During this transition we recommend for you to explore other parking alternatives. For more information please contact Parking Services at <a href='mailto:rpp@cityoftacoma.org?subject=Residential Parking Program Map  - Parcel " + currentParcel + " ' onfocus='this.blur();'>rpp@cityoftacoma.org</a>.<br>&nbsp;</div>";
@@ -303,13 +294,13 @@ define([
 
             dom.byId('messages').innerHTML = r; //update report message
 
-          }, function(err) {
+          }, function (err) {
             //Second Deferred Error
             alert("Error in identify: " + err.message);
             console.error("Identify Error: " + err.message);
           });
 
-        }, function(err) {
+        }, function (err) {
           //First Deferred Error
           alert("Error retrieving parcel results: " + err.message);
           console.error("Parcel Buffer Error: " + err.message);
@@ -334,7 +325,7 @@ define([
 
       map.infoWindow.show(screenPnt); //open popup
 
-      arrayUtils.forEach(parcel, function(feat) {
+      arrayUtils.forEach(parcel, function (feat) {
         feat.setSymbol(symbolParcel);
         map.graphics.add(feat); // Add the parcel boundary to the map
         map.setExtent(feat._extent.expand(3.0)); //Zoom map to a multiple of parcel extent
